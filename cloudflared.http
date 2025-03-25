@@ -1,0 +1,39 @@
+﻿### Variables
+@username = user
+@password = password
+@url = http://localhost:10000
+@token = null
+@id = null
+
+### Create JWT Token
+POST http://localhost:10000/token
+Content-Type: application/json
+
+{
+    "username": "{{username}}",
+    "password": "{{password}}"
+}
+
+### Get All Cloudflared Tunnels
+GET http://localhost:10000/cloudflared
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Get Cloudflared Tinnel by GUID
+GET http://localhost:10000/cloudflared/{{id}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Create New Cloudfalre Tunnel
+POST http://localhost:10000/cloudflared
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "Url": "{{url}}"
+}
+
+### Close Cloudflared Tinnel by GUID
+DELETE http://localhost:10000/cloudflared/{{id}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
