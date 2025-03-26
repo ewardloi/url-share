@@ -3,13 +3,13 @@
 export type SnackbarContext = {
   snackbarMessage: string;
   snackbarOpen: boolean;
-  setSnackbarOpen: (open: boolean) => void;
-  setSnackbarMessage: (message: string) => void;
+  setSnackbar: (message: string) => void;
+  closeSnackbar: () => void;
 };
 
 export const SnackbarContext = createContext<SnackbarContext>({
   snackbarMessage: "",
   snackbarOpen: false,
-  setSnackbarOpen: () => {},
-  setSnackbarMessage: () => {},
+  setSnackbar: () => {},
+  closeSnackbar: () => {},
 });

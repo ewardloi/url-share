@@ -1,5 +1,5 @@
 ﻿import { FormEvent, useEffect, useState } from "react";
-import { getToken } from "../helpers/tokenHelper";
+import { getToken, setToken } from "../helpers/tokenHelper";
 import { useSnackbar } from "./useSnackbar";
 import * as tokenApi from "../api/token";
 
@@ -11,7 +11,7 @@ export function useLoginDialog(props: LoginDialogProps) {
   const [open, setOpen] = useState(() => !getToken());
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { setSnackbarOpen, setSnackbarMessage } = useSnackbar();
+  const { setSnackbar } = useSnackbar();
 
   const onClose = () => {
     setOpen(false);
@@ -24,22 +24,24 @@ export function useLoginDialog(props: LoginDialogProps) {
     const formData = new FormData(event.currentTarget);
     const form = Object.fromEntries(formData.entries());
 
-    const authorized = await tokenApi.login({
-      username: form.username as string,
-      password: form.password as string,
-    });
+    try {
+      const response = await tokenApi.login({
+        username: form.username as string,
+        password: form.password as string,
+      });
 
-    setOpen(!authorized);
+      const accessToken = response.data?.accessToken;
 
-    if (!authorized) {
-      setSnackbarMessage("Invalid username or password");
-      setSnackbarOpen(true);
-    }
+      if (!accessToken) throw new Error("Invalid username or password");
 
-    if (authorized) {
+      setToken(accessToken);
+      setOpen(false);
       props.onAfterLogin();
+    } catch {
+      setSnackbar("Invalid username or password");
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {

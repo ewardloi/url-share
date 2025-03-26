@@ -38,14 +38,14 @@ npm install
 
 - ```USERNAME```: The username used for authentication.
 - ```PASSWORD_SHA256_HASH```: The SHA256 hash of the password for secure authentication.
-- ```JWT_SECRET```: (Optional) A secret key used to sign JWT. By default, it is randomly generated at startup.
+- ```JWT_SECRET```: (Optional) A secret key used to sign JWT. By default, it is **randomly** generated at startup.
 - ```JWT_EXPIRES```: (Optional) The expiration time for the JWT, in seconds. The default value is **3600** (**1 hour**).
 - ```JWT_ISSUER```: (Optional) The issuer of the JWT, which typically represents the application or service generating the token. Default is **UrlShare**
 - ```JWT_AUDIENCE```: (Optional) The intended audience for the JWT. Default is **UrlShare**
 - ```PORT```: (Optional) The port on which the application will run. Default is **10000**.
 - ```FRONTEND_ENABLED```: (Optional) A flag to enable or disable the frontend. Default is **true**, meaning the frontend is enabled.
 - ```CLOUDFLARED_TIMEOUT```: (Optional) The timeout in seconds for Cloudflared operations. Default is **30** seconds.
-- ```CLOUDFLARED_PATH```: (Optional) The path to the Cloudflared binary. Default is cloudflared.
+- ```CLOUDFLARED_PATH```: (Optional) The path to the Cloudflared binary. Default is **cloudflared**.
 - ```CLOUDFLARED_URL_PATTERN```: (Optional) The URL pattern for Cloudflared, which defaults to **https://[a-zA-Z0-9.-]*trycloudflare.com**.
 
 

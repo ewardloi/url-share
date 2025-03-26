@@ -11,7 +11,7 @@ export function useUrlShareDialog(props: UseUrlShareDialogProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { setSnackbarOpen, setSnackbarMessage } = useSnackbar();
+  const { setSnackbar } = useSnackbar();
 
   const onClose = () => {
     setOpen(false);
@@ -24,22 +24,25 @@ export function useUrlShareDialog(props: UseUrlShareDialogProps) {
     const formData = new FormData(event.currentTarget);
     const form = Object.fromEntries(formData.entries());
 
-    const share = await cloudflaredApi.create({ url: form.url as string });
+    try {
+      const response = await cloudflaredApi.create({ url: form.url as string });
 
-    setSnackbarOpen(true);
-    setSnackbarMessage(
-      share
-        ? `URL share created successfully: ${share.publicUrl}`
-        : `Failed to create URL share`,
-    );
-    setOpen(!share);
+      const urlShare = response.data;
 
-    if (share) {
-      props.onCreated(share);
-      await navigator.clipboard.writeText(share.publicUrl);
+      if (!urlShare) {
+        throw new Error("Failed to create URL share");
+      }
+
+      setSnackbar(`URL share created successfully: ${urlShare.publicUrl}`);
+      setOpen(false);
+
+      props.onCreated(urlShare);
+      await navigator.clipboard.writeText(urlShare.publicUrl);
+    } catch (e) {
+      setSnackbar("Failed to create URL share");
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return {

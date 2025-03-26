@@ -7,7 +7,7 @@ export type HeaderProps = {
 export function Header(props: HeaderProps) {
   return (
     <>
-      <Typography variant="h3" component="h3">
+      <Typography variant="h2" component="h3">
         {props.title}
       </Typography>
     </>

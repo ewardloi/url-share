@@ -8,21 +8,25 @@ export function useUrlShare() {
   const [urlShares, setUrlShares] = useState<Tunnel[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { setSnackbarOpen, setSnackbarMessage } = useSnackbar();
+  const { setSnackbar } = useSnackbar();
 
   const fetchUrlShares = async () => {
     setIsLoading(true);
 
-    const urlShares = await cloudflaredApi.getAll();
+    try {
+      const response = await cloudflaredApi.getAll();
+      const urlShares = response.data;
 
-    if (urlShares == null) {
-      setSnackbarOpen(true);
-      setSnackbarMessage("Failed to fetch url shares");
-      return;
+      if (urlShares == null) {
+        throw new Error("Failed to fetch url shares");
+      }
+
+      setUrlShares(urlShares);
+    } catch {
+      setSnackbar("Failed to fetch url shares");
+    } finally {
+      setIsLoading(false);
     }
-
-    setUrlShares(urlShares);
-    setIsLoading(false);
   };
 
   const addUrlShare = (urlShare: Tunnel) => {
@@ -32,10 +36,14 @@ export function useUrlShare() {
   const deleteUrlShare = async (id: string) => {
     setIsLoading(true);
 
-    await cloudflaredApi.close(id);
-    setUrlShares((value) => value.filter((u) => u.id !== id));
-
-    setIsLoading(false);
+    try {
+      await cloudflaredApi.close(id);
+      setUrlShares((value) => value.filter((u) => u.id !== id));
+    } catch {
+      setSnackbar(`Failed to close url shares with id ${id}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {

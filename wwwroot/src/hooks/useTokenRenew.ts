@@ -1,5 +1,5 @@
 ﻿import { useEffect } from "react";
-import { clearToken, getToken } from "../helpers/tokenHelper";
+import { clearToken, getToken, setToken } from "../helpers/tokenHelper";
 import * as tokenApi from "../api/token";
 
 export type UseTokenRenewProps = {
@@ -9,10 +9,20 @@ export type UseTokenRenewProps = {
 export function useTokenRenew(props: UseTokenRenewProps) {
   useEffect(() => {
     const renewToken = async () => {
-      if (await tokenApi.renew()) return;
+      try {
+        const response = await tokenApi.renew();
 
-      clearToken();
-      props.onRenewFailed();
+        const accessToken = response.data?.accessToken;
+
+        if (!accessToken) {
+          throw new Error("Could not renew token");
+        }
+
+        return setToken(accessToken);
+      } catch (e) {
+        clearToken();
+        props.onRenewFailed();
+      }
     };
 
     if (getToken()) {
